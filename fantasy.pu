@@ -1,0 +1,35 @@
+import requests
+
+team_id = 531536
+league_id = 517663
+gameweek = 22
+
+# Set your access token
+number = [1,2]
+for i in number:
+    url = f"https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/?page_standings={i}"
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        standings = data['standings']['results']
+
+        for position, team in enumerate(standings, start=1):
+            team_entry = team['entry']
+            team_entry_name = team['entry_name']
+            team_event_total = team['event_total']
+
+            # Get team details for the specified gameweek
+            team_details_url = f"https://fantasy.premierleague.com/api/entry/{team_entry}/event/{gameweek}/picks/"
+            team_details_response = requests.get(team_details_url)
+            if team_details_response.status_code == 200:
+                team_details = team_details_response.json()
+                GW_points  = team_details['entry_history']['points']
+                deduct_point  = team_details['entry_history']['event_transfers_cost']
+                print(f"{team_entry_name};{GW_points};{deduct_point}")
+            else:
+                print(f"Unable to fetch details for Team ID: {team_entry}")
+
+    else:
+        print("Unable to fetch league standings. Please check your connection or try again later.")
