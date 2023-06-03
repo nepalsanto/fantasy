@@ -1,7 +1,7 @@
 import requests
 
-team_id = 531536
-league_id = 517663
+team_id = ******
+league_id = 51****
 gameweek = 22
 
 # Set your access token
